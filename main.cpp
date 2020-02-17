@@ -267,6 +267,6 @@ int main()
     SDL_Quit();
     return EXIT_SUCCESS;
     return 0;
-};
+}
 
 
