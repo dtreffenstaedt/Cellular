@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <cinttypes>
 #include <random>
 #include <cstdlib>
@@ -15,7 +16,7 @@ public:
     constexpr static int mDim = 600;        // The dimension of the playing field
     constexpr static int mFactor = 1;       // the display factor (mFactor*mDim is the resolution of the window=)
     constexpr static int16_t r = 3;         // effective radius which influences the current cell
-    constexpr static double mFac = 0.5;     // factor which influences how much a field follows the average around it
+    double mFac;     // factor which influences how much a field follows the average around it
     int16_t mField[mDim][mDim];             // the playing field
 
     // calculates the average number around the current cell
@@ -196,10 +197,17 @@ public:
     }
 };
 
-int main()
+int main(int argc, char* argv[])
 {
+    double factor = 1;
+    if (argc == 2)
+    {
+        factor = stod(std::string(argv[1]));
+    }
+    std::cout<<"Using a factor of "<<factor<<"\n";
     // +++ initialise playing field
     Field f;
+    f.mFac = factor;
     int w	= f.mDim*f.mFactor;
     int h	= f.mDim*f.mFactor;
     // --- initialise playing field
