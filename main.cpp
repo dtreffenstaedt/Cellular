@@ -7,22 +7,6 @@
 #include <chrono>
 #include <SDL2/SDL.h>
 
-constexpr int16_t n(const int16_t &r)
-{
-    int16_t n = 0;
-    for (int i = -r; i <= r; i++)
-    {
-        int16_t dx = sqrt(r * r - i * i);
-        for (int j = -dx; j <= dx; j++)
-        {
-            if ((!(i == 0) != !(j == 0)) || (i != 0) || (j != 0))
-            {
-                n += 1/abs((i!=0?i:1)*(j!=0?j:1));
-            }
-        }
-    }
-    return n;
-}
 
 class Field
 {
@@ -32,7 +16,6 @@ public:
     constexpr static int mFactor = 1;       // the display factor (mFactor*mDim is the resolution of the window=)
     constexpr static int16_t r = 3;         // effective radius which influences the current cell
     constexpr static double mFac = 0.5;     // factor which influences how much a field follows the average around it
-    constexpr static int16_t ar = n(r);     // the number of cells in the radius. Because of borders.
     int16_t mField[mDim][mDim];             // the playing field
 
     // calculates the average number around the current cell
