@@ -27,17 +27,19 @@ constexpr int16_t n(const int16_t &r)
 class Field
 {
 public:
-    constexpr static int16_t mMax = 255;
-    constexpr static int mDim = 600;
-    constexpr static int mFactor = 1;
-    constexpr static int16_t r = 3;
-    constexpr static int16_t ar = n(r);
-    int16_t mField[mDim][mDim];
+    constexpr static int16_t mMax = 255;    // the maximum value a cell can have
+    constexpr static int mDim = 600;        // The dimension of the playing field
+    constexpr static int mFactor = 1;       // the display factor (mFactor*mDim is the resolution of the window=)
+    constexpr static int16_t r = 3;         // effective radius which influences the current cell
+    constexpr static double mFac = 0.5;     // factor which influences how much a field follows the average around it
+//    constexpr static int16_t ar = n(r);
+    int16_t mField[mDim][mDim];             // the playing field
 
-    int16_t av(const uint32_t x, const uint16_t y)
+    // calculates the average number around the current cell
+    int16_t av(const uint32_t x, const uint16_t y)  
     {
-        int16_t n = 0;
-        int16_t s = 0;
+        int16_t n = 0;      // number of cells counted
+        int16_t s = 0;      // sum of cell values
         for (int i = -r; i <= r; i++)
         {
             int16_t xP = x+i;
@@ -59,6 +61,7 @@ public:
         return s/n;
     }
 
+    // the sum of values around the current cell
     int16_t sum(const uint32_t x, const uint16_t y)
     {
         int16_t s = 0;
@@ -81,6 +84,7 @@ public:
         return s;
     }
 
+    // returns the value of the current cell
     int16_t value(const uint16_t x, const uint16_t y)
     {
         return mField[x][y];
@@ -92,11 +96,13 @@ public:
         init();
     }
 
+    // calculates the next value for the current cell.
+    // the cells value follows the average around it with a factor
     void calculateOne(const uint16_t x, const uint16_t y)
     {
         int16_t v = value(x,y);
 
-        v  += (av(x,y) - value(x,y));
+        v  += int16_t(double(av(x,y) - value(x,y)) * mFac);
 
         if (v > mMax)
         {
@@ -121,6 +127,7 @@ public:
         }
     }
 
+    // initialises the field, at this time that's random, but that choice is arbitrary
     void init()
     {
         srand(time(NULL));
@@ -139,6 +146,7 @@ public:
         }
     }
 
+    // Draws one cell onto the window
     void draw(SDL_Renderer *renderer,  uint16_t x, uint16_t y)
     {
         int16_t v =  value(x,y);
@@ -170,6 +178,7 @@ public:
         }
     }
 
+    // Draws the entire field
     void draw(SDL_Renderer *renderer)
     {
         for (int i = 0; i < mDim; i++)
@@ -181,6 +190,7 @@ public:
         }
     }
 
+    // prints the numerical values of the field
     void print()
     {
         for (int i = 0; i < mDim; i++)
@@ -205,10 +215,13 @@ public:
 
 int main()
 {
+    // +++ initialise playing field
     Field f;
     int w	= f.mDim*f.mFactor;
     int h	= f.mDim*f.mFactor;
+    // --- initialise playing field
 
+    // +++ initialise SDL2 Window
     SDL_Event event;
     SDL_Renderer *renderer;
     SDL_Window *window;
@@ -218,9 +231,11 @@ int main()
     SDL_CreateWindowAndRenderer(w, h, 0, &window, &renderer);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
+    // --- initialise SDL2 Window
 
-    int ms			= 1000;
-    int quit		= -1;
+
+    int ms			= 1000; // duration to wait in each loop.
+    int quit		= -1;   // set to a positive number in order to quit
 
 	while (true)
     {
@@ -261,6 +276,7 @@ int main()
             break;
         }
 //        std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+//        The delay is disabled since my computer is a bit slow, so that's not necessary.
     }
 
     SDL_DestroyRenderer(renderer);
