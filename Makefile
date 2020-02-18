@@ -6,5 +6,5 @@ SOURCES = main.cpp
 TARGET = cellular
 
 all: main.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(SOURCES) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET) $(LDFLAGS)
 
