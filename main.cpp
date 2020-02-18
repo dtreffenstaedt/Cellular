@@ -155,6 +155,16 @@ public:
                 draw(renderer, i, j);
             }
         }
+        for (int i = 0; i < mDim; i += 30)
+        {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderDrawLine(renderer, i*mFactor, 0, i*mFactor, (mDim-1)*mFactor);
+        }
+        for (int j = 0; j < mDim; j += 30)
+        {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderDrawLine(renderer, 0, j*mFactor, (mDim-1)*mFactor, j*mFactor);
+        }
     }
 
     // prints the numerical values of the field
