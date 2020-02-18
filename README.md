@@ -20,3 +20,5 @@ The argument determines how much each cell follows the average around itself. A 
 Values between 0.01 and 1.6 seem to be the most interesting.
 
 The starting values are being randomly generated, to try specific patterns, the 'init' method would have to be modified.
+
+To quit the program type q. If it seems to run too fast, uncomment the delay in the main loop in line 269.
