@@ -14,7 +14,7 @@ class Field
 public:
     constexpr static int16_t mMax = 255;    // the maximum value a cell can have
     constexpr static int mDim = 600;        // The dimension of the playing field
-    constexpr static int mFactor = 1;       // the display factor (mFactor*mDim is the resolution of the window=)
+    constexpr static int mFactor = 1;       // the display factor (mFactor*mDim is the resolution of the window)
     constexpr static int16_t r = 3;         // effective radius which influences the current cell
     double mFac;     // factor which influences how much a field follows the average around it
     int16_t mField[mDim][mDim];             // the playing field
@@ -26,46 +26,29 @@ public:
         int16_t s = 0;      // sum of cell values
         for (int i = -r; i <= r; i++)
         {
-            int16_t xP = x+i;
-            if (xP >= 0 && xP < mDim)
+            int16_t xP = (x+i) % (mDim);
+            if (xP < 0)
             {
-                int16_t dx = sqrt(r * r - i * i);
-                for (int j = -dx; j <= dx; j++)
+                xP = (mDim) + xP;
+            }
+            int16_t dx = sqrt(r * r - i * i);
+            for (int j = -dx; j <= dx; j++)
+            {
+                int16_t yP = (y+j) % (mDim);
+
+                if (yP < 0)
                 {
-                    int16_t yP = y+j;
-                    if (yP >= 0 && yP < mDim && ((!(i == 0) != !(j == 0)) || (i != 0) || (j != 0)))
-                    {
-                        int16_t curr = abs((i!=0?i:1)*(j!=0?j:1));
-                        n += 1/curr;
-                        s += mField[xP][yP]/curr;
-                    }
+                    yP = (mDim) + yP;
+                }
+                if ((!(i == 0) != !(j == 0)) || (i != 0) || (j != 0))
+                {
+                    int16_t curr = sqrt(i*i + j*j);
+                    n += 1/curr;
+                    s += mField[xP][yP]/curr;
                 }
             }
         }
         return s/n;
-    }
-
-    // the sum of values around the current cell
-    int16_t sum(const uint32_t x, const uint16_t y)
-    {
-        int16_t s = 0;
-        for (int i = -r; i <= r; i++)
-        {
-            int16_t xP = x+i;
-            if (xP >= 0 && xP < mDim)
-            {
-                int16_t dx = sqrt(r * r - i * i);
-                for (int j = -dx; j <= dx; j++)
-                {
-                    int16_t yP = y+j;
-                    if (yP >= 0 && yP < mDim && ((!(i == 0) != !(j == 0)) || (i != 0) || (j != 0)))
-                    {
-                        s += mField[xP][yP]/abs((i!=0?i:1)*(j!=0?j:1));
-                    }
-                }
-            }
-        }
-        return s;
     }
 
     // returns the value of the current cell
